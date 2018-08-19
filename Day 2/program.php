@@ -2,6 +2,11 @@
 
 /* Advent of Code - Day 2 - Matt Davis */
 
+//Test input
+// const INPUT = "5 9 2 8
+// 9 4 7 3
+// 3 8 6 5";
+
 const INPUT = "121	59	141	21	120	67	58	49	22	46	56	112	53	111	104	130
 1926	1910	760	2055	28	2242	146	1485	163	976	1842	1982	137	1387	162	789
 4088	258	2060	1014	4420	177	4159	194	2794	4673	4092	681	174	2924	170	3548
@@ -46,27 +51,72 @@ function buildChecksumArray( string $input, int $columns )
     return $checksumArray;
 }
 
-function solvePuzzle( string $input, int $columns)
-{
+ function solvePuzzle( string $input, int $columns)
+ {
 
-    $checksumArray = buildChecksumArray( $input, $columns );
+    $checksumArray = buildChecksumArray( INPUT, $columns );
     $checkSum = 0;
+    $secondChecksum = 0;
 
-    foreach ($checksumArray as $row => $rowNumbers) {
+    foreach ($checksumArray as $rowKey => $rowNumbers) 
+    {
+        //Calculates checksum for part one
         $smallestNumber = min($rowNumbers);
         $largestNumber = max($rowNumbers);
 
         $difference = $largestNumber - $smallestNumber;
         $checkSum += $difference;
+
+        
+        
+        /////////////////////////Calculates checksum for part two///////////////////
+
+        //Sort current row from highest to lowest
+        rsort($rowNumbers);
+      
+        $count = 0;
+        //Iterate through each row of numbers
+        foreach ($rowNumbers as $key => $number) 
+        {
+            $rowSize = sizeof($rowNumbers);
+            
+            while( $count < $rowSize )
+            {
+                //Take the current number and divide it by all of the following numbers in the array
+                for($i=$key; $i < (sizeof($rowNumbers) - 1); $i++) 
+                {           
+
+                    $divisionResult = $rowNumbers[$key] / $rowNumbers[$i+1];
+         
+                   //If a whole number is found, store it so it can be added to the checksum
+                   if(floor($divisionResult) == $divisionResult)
+                   {
+                        $rowSum = $divisionResult;
+                     
+                    }
+            
+                }
+               
+                $count++;
+                $key++;
+                        
+            }
+            
+        }
+
+        $secondChecksum += $rowSum;
     }
+    print($secondChecksum);
 
-    return $checkSum;
-}
+    $puzzleSolutions["Part One"][] = $checkSum;
+    $puzzleSolutions["Part Two"][] = $secondChecksum;
+    
+    return $puzzleSolutions;
+ }
 
 
-echo solvePuzzle(INPUT, 16);
+ print_r(solvePuzzle(INPUT, 16));
 
 //Part 1 solution is 32121
-
-
+//Part 2 solution is 197
 
